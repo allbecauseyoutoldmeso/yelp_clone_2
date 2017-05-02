@@ -22,6 +22,7 @@ feature 'restaurants' do
   end
 
   context 'creating restaurants' do
+
     scenario 'prompts user to fill out a form, then displays the new restaurant' do
       visit '/restaurants'
       click_link 'Add a restaurant'
@@ -30,6 +31,18 @@ feature 'restaurants' do
       expect(page).to have_content 'Roast & Toast'
       expect(current_path).to eq '/restaurants'
     end
+
+    context 'an invalid restaurant' do
+      scenario 'does not let you submit a name that is too long' do
+        visit '/restaurants'
+        click_link 'Add a restaurant'
+        fill_in 'Name', with: 'this is a very very vey long name for a restaurant'
+        click_button 'Create Restaurant'
+        expect(page).not_to have_css 'h2', text: 'this is a very very vey long name for a restaurant'
+        expect(page).to have_content 'error'
+      end
+    end
+
   end
 
   context 'viewing restaurants' do
